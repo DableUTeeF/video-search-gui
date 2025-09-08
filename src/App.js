@@ -2,7 +2,7 @@ import './App.css';
 import ReactPlayer from 'react-player'
 import React, { useState } from "react";
 import {FramePlayer} from './frameplayer'
-
+// todo: https://stackoverflow.com/questions/32699721/javascript-extract-video-frames-reliably
 function App() {
   const [videoFilePath, setVideoFilePath] = useState(null);
   const handleVideoUpload = (event) => {
