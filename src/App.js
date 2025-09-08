@@ -1,23 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
+import ReactPlayer from 'react-player'
+import React, { useState } from "react";
+import {FramePlayer} from './frameplayer'
 
 function App() {
+  const [videoFilePath, setVideoFilePath] = useState(null);
+  const handleVideoUpload = (event) => {
+    setVideoFilePath(URL.createObjectURL(event.target.files[0]));
+  };
+  console.log(videoFilePath);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="file" onChange={handleVideoUpload}/>
+      <video src={videoFilePath} width="100%" height="100%" controls={true} />
     </div>
   );
 }
