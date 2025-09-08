@@ -1,20 +1,63 @@
 import './App.css';
-import ReactPlayer from 'react-player'
-import React, { useState } from "react";
-import {FramePlayer} from './frameplayer'
-// todo: https://stackoverflow.com/questions/32699721/javascript-extract-video-frames-reliably
-function App() {
-  const [videoFilePath, setVideoFilePath] = useState(null);
-  const handleVideoUpload = (event) => {
-    setVideoFilePath(URL.createObjectURL(event.target.files[0]));
+import { VideoToFrames, VideoToFramesMethod } from "./VideoToFrame";
+import { useState } from "react";
+
+export default function App() {
+  const [images, setImages] = useState([]);
+  const [status, setStatus] = useState("IDLE");
+
+  const onInput = async (event) => {
+    setImages([]);
+    setStatus("LOADING");
+
+    const [file] = event.target.files;
+    const fileUrl = URL.createObjectURL(file);
+    const frames = await VideoToFrames.getFrames(
+      fileUrl,
+      30,
+      VideoToFramesMethod.totalFrames
+    );
+
+    setStatus("IDLE");
+    setImages(frames);
   };
-  console.log(videoFilePath);
+
+  const now = new Date().toDateString();
+
   return (
-    <div className="App">
-      <input type="file" onChange={handleVideoUpload}/>
-      <video src={videoFilePath} width="100%" height="100%" controls={true} />
+    <div className="container">
+      <h1>Get frames from video 🎞</h1>
+      <p>Upload a video, then click the images you want to download!</p>
+      <label>
+        {status === "IDLE" ? (
+          "Choose file"
+        ) : (
+          "Choose file"
+        )}
+        <input
+          type="file"
+          className="visually-hidden"
+          accept="video/*"
+          onChange={onInput}
+        />
+      </label>
+
+      {images?.length > 0 && (
+        <div className="output">
+          {images.map((imageUrl, index) => (
+            <a
+              key={imageUrl}
+              href={imageUrl}
+              download={`${now}-${index + 1}.png`}
+            >
+              <span class="visually-hidden">
+                Download image number {index + 1}
+              </span>
+              <img src={imageUrl} alt="" />
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-export default App;
